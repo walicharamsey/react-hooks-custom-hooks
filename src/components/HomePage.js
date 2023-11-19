@@ -3,21 +3,23 @@ import About from "./About";
 import ArticleList from "./ArticleList";
 
 function HomePage() {
-  // fetch data for posts
   const [isLoaded, setIsLoaded] = useState(false);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     setIsLoaded(false);
     fetch("http://localhost:4000/posts")
-      .then((r) => r.json())
-      .then((posts) => {
-        setPosts(posts);
+      .then((response) => response.json())
+      .then((postsData) => {
+        setPosts(postsData);
         setIsLoaded(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching posts:", error);
+        setIsLoaded(true); // Assuming setIsLoaded to true on error
       });
   }, []);
 
-  // set the document title
   useEffect(() => {
     document.title = "Underreacted | Home";
   }, []);

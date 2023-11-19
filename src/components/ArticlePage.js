@@ -3,24 +3,33 @@ import { useParams } from "react-router-dom";
 import { makeEmojiList } from "../utils";
 
 function ArticlePage() {
-  // fetch data for a post
   const { id } = useParams();
   const [isLoaded, setIsLoaded] = useState(false);
   const [post, setPost] = useState(null);
 
   const url = `http://localhost:4000/posts/${id}`;
+
   useEffect(() => {
     setIsLoaded(false);
     fetch(url)
-      .then((r) => r.json())
-      .then((post) => {
-        setPost(post);
+      .then((response) => response.json())
+      .then((postData) => {
+        setPost(postData);
         setIsLoaded(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching post data:", error);
+        setIsLoaded(true); // Assuming setIsLoaded to true on error
       });
   }, [url]);
 
-  // set the document title
-  const pageTitle = post ? `Underreacted | ${post.title}` : "Underreacted";
+  const [pageTitle, setPageTitle] = useState("Underreacted");
+  useEffect(() => {
+    if (post) {
+      setPageTitle(`Underreacted | ${post.title}`);
+    }
+  }, [post]);
+
   useEffect(() => {
     document.title = pageTitle;
   }, [pageTitle]);
